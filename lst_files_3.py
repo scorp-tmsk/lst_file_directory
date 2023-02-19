@@ -55,7 +55,8 @@ def create_table_file(lst_files: list):
 
     for ind, atr_file in enumerate(lst_files, start=1):
         table = table.table.add_row()
-        row = table.table.rows[ind + 2]
+        row = table.table.rows[len(table.table.rows) - 1]
+
         # запись данных в ячейки
         row.cells[0].text = str(ind)
         row.cells[1].text = atr_file['Имя файла']
