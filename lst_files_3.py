@@ -20,6 +20,8 @@ def get_list_files(*args) -> list:
     for root, dirs, files in os.walk(folder):
         for file in files:
             dict_atr_file = {}
+            if get_mark_file(file) == 'НС':
+                continue
             if file.endswith(lst_type) and not file.startswith('~'):
                 dict_atr_file.setdefault('Имя файла', os.path.join(root, file))
                 dict_atr_file.setdefault('Формат файла', (os.path.splitext(file)[1]))
@@ -31,12 +33,12 @@ def get_list_files(*args) -> list:
 
 def get_mark_file(file_name: str) -> str:
     """Определяет категорию файла"""
-    if file_name.startswith('0'):
-        return 'Гриф конфидециальности 1'
-    elif file_name.startswith('1'):
-        return 'Гриф конфидециальности 2'
+    if file_name.startswith('00'):
+        return 'СC'
+    elif file_name.startswith('0'):
+        return 'С'
     else:
-        return 'Общедоступно'
+        return 'НС'
 
 
 def get_create_data_file(file_path: str) -> str:
@@ -79,6 +81,11 @@ def create_table_excel(lst_files: list):
 
 
 if __name__ == '__main__':
+    print("Идет формирование описи файлов в директории и в ее подкаталагах.\nВ опись включаются файлы следующего расширения:'docx', 'doc', 'xls', 'xlsx', 'pptx', 'ppt', 'txt',")
     lst_files = get_list_files()
-    create_table_file(sorted(lst_files, key=lambda x: x['Дата создания']))
-    create_table_excel(lst_files)
+    if len(lst_files) == 0:
+        print('Файлов с грифами секретности "C" и "СС" нет')
+    else:
+        create_table_file(sorted(lst_files, key=lambda x: x['Дата создания']))
+        create_table_excel(lst_files)
+        print('Опись сформирована')
